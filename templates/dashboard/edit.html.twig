@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <edit-site :site="{{ site }}"
+               form-url="{{ url('save_site', {'id': siteId}) }}"
+               csrf-token="{{ csrf_token('save-site') }}"
+               id="{{ siteId }}"
+    ></edit-site>
+{% endblock %}

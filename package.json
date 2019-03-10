@@ -1,0 +1,25 @@
+{
+    "devDependencies": {
+        "@symfony/webpack-encore": "^0.22.0",
+        "axios": "^0.18.0",
+        "vue": "^2.6.8",
+        "vue-loader": "^15.7.0",
+        "vue-router": "^3.0.2",
+        "vue-template-compiler": "^2.6.8",
+        "webpack-notifier": "^1.6.0"
+    },
+    "license": "UNLICENSED",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "ionicons": "^4.5.5",
+        "load-awesome": "^1.1.0",
+        "node-sass": "^4.11.0",
+        "sass-loader": "^7.1.0"
+    }
+}

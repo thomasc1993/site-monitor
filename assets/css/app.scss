@@ -1,0 +1,314 @@
+@import "assets/base";
+@import "assets/grid";
+@import "assets/colors";
+@import "assets/animations";
+@import "~ionicons/dist/scss/ionicons";
+@import "~load-awesome/css/ball-clip-rotate-multiple.min.css";
+
+$font: "Josefin Sans", sans-serif;
+
+.la-ball-clip-rotate-multiple {
+  color: $primary-color;
+}
+
+%gridRow {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0;
+  width: 100%;
+}
+%gridColumn {
+  flex: 1 1 auto;
+}
+%flexVerticalCenter {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+%loadingCloak {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(247, 247, 247, 0.75);
+  z-index: 9;
+}
+
+body {
+  background: #f7f7f7;
+  color: $black;
+  font-family: $font;
+}
+
+input {
+  font-family: $font;
+}
+
+.header {
+  background: $primary-color;
+  height: 5rem;
+  box-shadow: 0px 3px 30px -5px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  &__title {
+    a {
+      color: #fff;
+    }
+  }
+  .container {
+    display: flex;
+    height: inherit;
+    align-items: center;
+  }
+}
+
+.colorTitle {
+  position: relative;
+  color: $primary-color;
+  margin-bottom: 2rem;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    height: .5rem;
+    width: 7.5rem;
+    background: $primary-color;
+  }
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+}
+
+#app {
+  padding: 2.5rem 0;
+}
+
+.dashboardToolbar {
+  @extend %gridRow;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  .crawlSites {
+    font-size: 3.6rem;
+    color: $primary-color;
+    cursor: pointer;
+    transition: .25s $cubic-bezier;
+    @extend %flexVerticalCenter;
+    &:hover {
+      color: $primary-color-bright;
+    }
+    &.active {
+      color: $grey;
+    }
+  }
+}
+
+.siteList {
+  position: relative;
+  .loadingCloak {
+    @extend %loadingCloak;
+  }
+  .loader {
+    position: absolute;
+    left: 50%;
+    top: 10rem;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
+  &__single {
+    background: #fff;
+    padding: 2.5rem;
+    margin-bottom: 1rem;
+    justify-content: space-between;
+    @extend %gridRow;
+    &__title {
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: .1rem;
+      font-size: 1rem;
+      color: $grey;
+      margin-bottom: .5rem;
+    }
+    &__siteInfo {
+      @extend %gridColumn;
+      @extend %flexVerticalCenter;
+      max-width: 20%;
+      flex-basis: 20%;
+      padding-right: 1rem;
+      &__name {
+        margin: 0;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      &__link {
+        font-size: 1.3rem;
+        text-decoration: none;
+        i {
+          font-size: 1.3rem !important;
+        }
+      }
+    }
+    &__monitor {
+      @extend %gridColumn;
+      max-width: 20%;
+      flex-basis: 20%;
+      &__isUp {
+        color: $green;
+      }
+      &__isSlow {
+        color: $orange;
+      }
+      &__isDown {
+        color: $red;
+      }
+      &__responseTime {
+        font-weight: 300;
+        margin-top: .5rem;
+      }
+    }
+    i {
+      font-size: 2rem;
+      vertical-align: middle;
+    }
+    &__cms {
+      @extend %gridColumn;
+      max-width: 15%;
+      flex-basis: 15%;
+    }
+    &__actions {
+      a {
+        color: $black;
+        display: block;
+        font-size: 1.2rem;
+      }
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.loginPage {
+  max-width: 50rem;
+  padding: 5rem;
+  background: #fff;
+  position: relative;
+  .loadingCloak {
+    @extend %loadingCloak;
+    &__content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    .success {
+      color: $green;
+      font-size: 7.2rem;
+      z-index: 10;
+    }
+  }
+  &__title {
+    font-size: 4.8rem;
+    margin-bottom: 2.5rem;
+  }
+}
+.loginForm {
+  input, button {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    font-family: "Josefin Sans", sans-serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    padding: 1.5rem;
+    border: none;
+    background: #f3f3f3;
+    border-radius: 2.5rem;
+    &:focus,
+    &:active {
+      outline: none;
+    }
+  }
+  button {
+    background: $grey;
+    color: #fff;
+    font-weight: 400;
+    font-size: 2rem;
+    transition: 250ms $cubic-bezier;
+    cursor: default;
+    &.isValid {
+      background: $primary-color;
+      cursor: pointer;
+      &:hover {
+        background: $primary-color-bright;
+      }
+    }
+  }
+  .errorMessage {
+    text-align: center;
+    color: $red;
+  }
+}
+
+.editSite {
+  background: #fff;
+  padding: 2.5rem;
+  max-width: 60rem;
+  margin: auto;
+  &__name {
+    font-size: 4.8rem !important;
+    font-weight: 700 !important;
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+  input {
+    border: none;
+    font-size: 1.6rem;
+    width: 100%;
+    position: relative;
+    border-bottom: 2px solid transparent;
+    font-weight: 300;
+    &:focus,
+    &:active {
+      border-bottom: 2px solid $primary-color;
+      outline: none;
+    }
+  }
+  button {
+    padding: 1.5rem;
+    width: 100%;
+    display: block;
+    font-family: $font;
+    background: $primary-color;
+    color: #fff;
+    border: none;
+    font-size: 2rem;
+    margin-top: 2.5rem;
+    cursor: pointer;
+    transition: 250ms $cubic-bezier;
+    &:hover {
+      background: $primary-color-bright;
+    }
+  }
+  .inputRow {
+    display: block;
+    label {
+      font-size: 1rem;
+      text-transform: uppercase;
+      vertical-align: middle;
+      color: $grey;
+      display: inline-block;
+      width: 100%;
+    }
+    margin-bottom: 1.5rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

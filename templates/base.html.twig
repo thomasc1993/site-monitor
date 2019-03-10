@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,600,700" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    </head>
+    <body>
+        <header class="header">
+            <div class="container">
+                <div class="header__title"><a href="{{ url('index') }}">Site Monitor</a></div>
+            </div>
+        </header>
+        <div id="app">
+            {% block body %}{% endblock %}
+        </div>
+        {% block javascripts %}{% endblock %}
+        <script src="{{ asset('build/app.js') }}"></script>
+        <script src="{{ asset('build/runtime.js') }}"></script>
+    </body>
+</html>
