@@ -157,13 +157,13 @@ a {
       @extend %gridColumn;
       max-width: 20%;
       flex-basis: 20%;
-      &__isUp {
+      &--up {
         color: $green;
       }
-      &__isSlow {
+      &--slow {
         color: $orange;
       }
-      &__isDown {
+      &--down {
         color: $red;
       }
       &__responseTime {
