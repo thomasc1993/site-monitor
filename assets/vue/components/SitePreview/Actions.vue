@@ -1,5 +1,5 @@
 <template>
-  <div :class="componentClass">
+  <div>
     <span class="siteList__single__title">Actions</span>
     <a :href="`site/${site.id}`">
       <i class="ion-md-create"></i>
@@ -24,3 +24,11 @@
     },
   }
 </script>
+
+<style lang="scss" scoped>
+  a {
+    color: #333;
+    display: block;
+    font-size: 1.2rem;
+  }
+</style>
