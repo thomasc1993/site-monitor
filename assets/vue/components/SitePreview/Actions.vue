@@ -24,11 +24,3 @@
     },
   }
 </script>
-
-<style lang="scss" scoped>
-  a {
-    color: #333;
-    display: block;
-    font-size: 1.2rem;
-  }
-</style>
