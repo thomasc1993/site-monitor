@@ -20,9 +20,9 @@
         <i class="ion-md-key"></i>
         <span>Login</span>
       </button>
-      <div class="errorMessage" v-if="this.errorMessage">
+      <div class="errorMessage" v-if="this.error">
         <i class="ion-md-alert"></i>
-        <span>{{ this.errorMessage }}</span>
+        <span>{{ this.error }}</span>
       </div>
     </form>
   </div>
@@ -48,7 +48,7 @@
       return {
         email: null,
         password: null,
-        errorMessage: null,
+        error: null,
         loginSuccess: false,
         isLoading: false
       }

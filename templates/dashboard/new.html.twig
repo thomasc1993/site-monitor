@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <add-site form-url="{{ url('save_new_site') }}"
+              csrf-token="{{ csrf_token('save-site') }}"
+              redirect-url="{{ url('index') }}"
+    ></add-site>
+{% endblock %}

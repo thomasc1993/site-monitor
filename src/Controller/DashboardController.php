@@ -31,15 +31,43 @@ final class DashboardController extends AbstractController
         ]);
     }
 
-    public function edit($id): Response
+    public function edit($slug): Response
     {
         $siteRepository = $this->getDoctrine()->getRepository(Site::class);
-        $site = $siteRepository->find($id);
+        $site = $siteRepository->findOneBy(['slug' => $slug]);
         $jsonSite = $this->getSerializer()->serialize($site, 'json');
 
         return $this->render('dashboard/edit.html.twig', [
-            'siteId' => $id,
+            'siteId' => $site->getId(),
             'site' => $jsonSite
+        ]);
+    }
+
+    public function new(): Response
+    {
+        return $this->render('dashboard/new.html.twig', []);
+    }
+
+    public function saveNew(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent());
+
+        if (!$this->isCsrfTokenValid('save-site', $data->token)) {
+            return $this->json(['error' => 'Token not valid.']);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $site = new Site();
+        $site->setName($data->name);
+        $site->setStatus('up');
+        $site->setUrl($data->url);
+        $site->setCms($data->cms);
+        $site->setAdminUrl($data->admin_url);
+        $entityManager->persist($site);
+        $entityManager->flush();
+
+        return $this->json([
+            'response' => 'Site saved.'
         ]);
     }
 
@@ -55,6 +83,12 @@ final class DashboardController extends AbstractController
         $siteRepository = $this->getDoctrine()->getRepository(Site::class);
 
         $site = $siteRepository->find($data->id);
+        if (!$site) {
+            return $this->json([
+                'error' => 'Site with ID ' . $data->id . ' not found.'
+            ]);
+        }
+
         $site->setName($data->name);
         $site->setUrl($data->url);
         $site->setCms($data->cms);

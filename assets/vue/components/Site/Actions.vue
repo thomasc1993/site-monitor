@@ -1,7 +1,7 @@
 <template>
   <div>
     <span class="siteList__single__title">Actions</span>
-    <a :href="`site/${site.id}`">
+    <a :href="`site/${site.slug}`">
       <i class="ion-md-create"></i>
       <span>Edit</span>
     </a>

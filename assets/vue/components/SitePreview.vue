@@ -8,10 +8,10 @@
 </template>
 
 <script>
-  import Actions from './SitePreview/Actions';
-  import Cms from './SitePreview/Cms';
-  import Monitor from './SitePreview/Monitor';
-  import SiteInfo from './SitePreview/SiteInfo';
+  import Actions from './Site/Actions';
+  import Cms from './Site/Cms';
+  import Monitor from './Site/Monitor';
+  import SiteInfo from './Site/SiteInfo';
 
   export default {
     name: 'SitePreview',

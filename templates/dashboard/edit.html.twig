@@ -4,5 +4,6 @@
                form-url="{{ url('save_site', {'id': siteId}) }}"
                csrf-token="{{ csrf_token('save-site') }}"
                id="{{ siteId }}"
+               redirect-url="{{ url('index') }}"
     ></edit-site>
 {% endblock %}

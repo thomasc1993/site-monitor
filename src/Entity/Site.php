@@ -46,6 +46,11 @@ class Site
      */
     private $response_time_latest;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -123,6 +128,18 @@ class Site
     public function setResponseTimeLatest(?string $response_time_latest): self
     {
         $this->response_time_latest = $response_time_latest;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

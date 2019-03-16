@@ -1,8 +1,15 @@
 index:
   path: /
   controller: App\Controller\DashboardController::display
+add_site:
+  path: /site/new
+  controller: App\Controller\DashboardController::new
+save_new_site:
+  path: /site/new/save
+  controller: App\Controller\DashboardController::saveNew
+  methods: [POST]
 edit_site:
-  path: /site/{id}
+  path: /site/{slug}
   controller: App\Controller\DashboardController::edit
 save_site:
   path: /site/{id}/save

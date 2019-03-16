@@ -1,13 +1,16 @@
 <template>
   <div class="container">
     <div class="dashboardToolbar">
-      <h1 class="colorTitle">Dashboard ({{ sites.length }})</h1>
+      <h1 class="dashboardToolbar__title colorTitle">Dashboard ({{ sites.length }})</h1>
       <div class="crawlSites"
            v-on:click="crawlSites"
            v-bind:class="{ active: loading }"
       >
         <i class="ion-md-refresh"></i>
       </div>
+      <a href="site/new" class="addSiteButton">
+        <i class="ion-md-add"></i>
+      </a>
     </div>
     <SiteList :sites="sites"
               :loading="loading"
