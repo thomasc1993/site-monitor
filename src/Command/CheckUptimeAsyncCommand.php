@@ -23,7 +23,6 @@ class CheckUptimeAsyncCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $commandStart = microtime(true);
         $guzzle = new Client();
         $siteRepository = $this->em->getRepository(Site::class);
         $sites = $siteRepository->findAll();
@@ -53,10 +52,6 @@ class CheckUptimeAsyncCommand extends Command
         foreach ($promises as $promise) {
             $promise->wait();
         }
-
-        $commandEnd = microtime(true);
-        $duration = $commandEnd - $commandStart;
-        $output->writeln('Command execution time: ' . $duration . ' seconds');
     }
 
     protected function fulfilled(ResponseInterface $response, Site $site, $crawlStart)
@@ -64,34 +59,28 @@ class CheckUptimeAsyncCommand extends Command
         $crawlEnd = microtime(true);
         $requestTime = $crawlEnd - $crawlStart;
         $site->setResponseTimeLatest($requestTime);
+        $this->updateStatus($site, $response);
         $this->em->flush();
-        if ($requestTime > 5) {
-            if ($site->getStatus() !== 'slow') {
-                $site->setStatus('slow');
-                $this->em->flush();
-            }
-            return;
-        }
-
-        if ($response->getStatusCode() !== 200) {
-            if ($site->getStatus() !== 'down') {
-                $site->setStatus('down');
-                $this->em->flush();
-            }
-            return;
-        }
-
-        if ($site->getStatus() !== 'up') {
-            $site->setStatus('up');
-            $this->em->flush();
-        }
     }
 
     protected function rejected(RequestException $exception, Site $site)
     {
-        if ($site->getStatus() !== 'down') {
+        $site->setStatus('down');
+        $this->em->flush();
+    }
+
+    protected function updateStatus(Site $site, ResponseInterface $response): void
+    {
+        if ($response->getStatusCode() !== 200) {
             $site->setStatus('down');
-            $this->em->flush();
+            return;
         }
+
+        if ($site->getResponseTimeLatest() > 5) {
+            $site->setStatus('slow');
+            return;
+        }
+
+        $site->setStatus('up');
     }
 }
