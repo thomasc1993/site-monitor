@@ -25,8 +25,8 @@ final class UniqueSlug
         }
 
         $entityManager = $args->getEntityManager();
-        $entityName = $entityManager->getClassMetadata(Site::class)->getName();
-        $slug = $this->slugger->generateUniqueSlug($entity->getName(), $entityName, $entity->getId());
+        $repository = $entityManager->getRepository(Site::class);
+        $slug = $this->slugger->generateUniqueSlug($entity->getName(), $repository, $entity->getId());
         $entity->setSlug($slug);
 
         $entityManager->flush();
@@ -42,8 +42,8 @@ final class UniqueSlug
         }
 
         $entityManager = $args->getEntityManager();
-        $entityName = $entityManager->getClassMetadata(Site::class)->getName();
-        $slug = $this->slugger->generateUniqueSlug($entity->getName(), $entityName, $entity->getId());
+        $repository = $entityManager->getRepository(Site::class);
+        $slug = $this->slugger->generateUniqueSlug($entity->getName(), $repository, $entity->getId());
         $entity->setSlug($slug);
     }
 }
