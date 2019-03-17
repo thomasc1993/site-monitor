@@ -136,4 +136,41 @@ class SluggerTest extends TestCase
         $this->assertEquals(true, $slugExists);
     }
 
+    public function testReturnsUniqueSlugWithoutAppendedIterator()
+    {
+        $insertedString = 'Test slug';
+        $expectedResult = 'test-slug';
+
+        $this->repository->expects($this->once())
+            ->method('findOneBy')
+            ->with($this->equalTo(['slug' => $expectedResult]))
+            ->willReturn(null);
+
+        $uniqueSlug = $this->slugger->generateUniqueSlug($insertedString, $this->repository);
+
+        $this->assertEquals($expectedResult, $uniqueSlug);
+    }
+
+    public function testReturnsTwoUniqueSlugsFromSameString()
+    {
+        $insertedString = 'Test slug';
+
+        $this->repository->expects($this->at(0))
+            ->method('findOneBy')
+            ->with($this->equalTo(['slug' => 'test-slug']))
+            ->willReturn(null);
+        $this->repository->expects($this->at(1))
+            ->method('findOneBy')
+            ->with($this->equalTo(['slug' => 'test-slug']))
+            ->willReturn(new Site());
+        $this->repository->expects($this->at(2))
+            ->method('findOneBy')
+            ->with($this->equalTo(['slug' => 'test-slug-1']))
+            ->willReturn(null);
+
+        $firstUniqueSlug = $this->slugger->generateUniqueSlug($insertedString, $this->repository);
+        $secondUniqueSlug = $this->slugger->generateUniqueSlug($insertedString, $this->repository);
+
+        $this->assertNotEquals($firstUniqueSlug, $secondUniqueSlug);
+    }
 }
