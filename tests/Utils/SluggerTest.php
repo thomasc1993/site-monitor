@@ -18,44 +18,27 @@ class SluggerTest extends TestCase
         $this->slugger = new Slugger();
     }
 
-    public function testReplacesSpacesWithDashes()
+    /**
+     * @param string $originalString
+     * @param string $expectedResult
+     * @dataProvider providerTestReturnsValidSlug
+     */
+    public function testReturnsValidSlug(string $originalString, string $expectedResult)
     {
-        $insertedString = 'slug with spaces';
-        $expectedResult = 'slug-with-spaces';
-
-        $slug = $this->slugger->generateSlug($insertedString);
+        $slug = $this->slugger->generateSlug($originalString);
 
         $this->assertEquals($expectedResult, $slug);
     }
 
-    public function testReturnsAllLowercase()
+    public function providerTestReturnsValidSlug()
     {
-        $insertedString = 'SLUG';
-        $expectedResult = 'slug';
-
-        $slug = $this->slugger->generateSlug($insertedString);
-
-        $this->assertEquals($expectedResult, $slug);
-    }
-
-    public function testRemovesRepeatingDashes()
-    {
-        $insertedString = 'test & slug';
-        $expectedResult = 'test-slug';
-
-        $slug = $this->slugger->generateSlug($insertedString);
-
-        $this->assertEquals($expectedResult, $slug);
-    }
-
-    public function testRemovesStartingAndEndingDashes()
-    {
-        $insertedString = '& test #';
-        $expectedResult = 'test';
-
-        $slug = $this->slugger->generateSlug($insertedString);
-
-        $this->assertEquals($expectedResult, $slug);
+        return [
+            ['slug with spaces', 'slug-with-spaces'],
+            ['SLUG', 'slug'],
+            ['test! &@ s$lug (#*)', 'test-slug'],
+            ['', ''],
+            ['æ ø å', 'ae-oe-aa']
+        ];
     }
 
     public function testSlugExists()
