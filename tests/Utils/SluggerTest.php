@@ -12,7 +12,6 @@ class SluggerTest extends TestCase
     protected $entityManager;
     protected $repository;
     protected $slugger;
-    protected $site;
 
     protected function setUp()
     {
