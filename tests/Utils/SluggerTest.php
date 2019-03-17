@@ -9,13 +9,25 @@ use PHPUnit\Framework\TestCase;
 
 class SluggerTest extends TestCase
 {
+    protected $entityManager;
+    protected $repository;
+    protected $slugger;
+    protected $site;
+
+    protected function setUp()
+    {
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->repository = $this->createMock(SiteRepository::class);
+        $this->slugger = new Slugger($this->entityManager);
+    }
+
     public function testReplacesSpacesWithDashes()
     {
         $insertedString = 'slug with spaces';
         $expectedResult = 'slug-with-spaces';
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $slugger = new Slugger($entityManager);
-        $slug = $slugger->generateSlug($insertedString);
+
+        $slug = $this->slugger->generateSlug($insertedString);
+
         $this->assertEquals($expectedResult, $slug);
     }
 
@@ -23,9 +35,9 @@ class SluggerTest extends TestCase
     {
         $insertedString = 'SLUG';
         $expectedResult = 'slug';
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $slugger = new Slugger($entityManager);
-        $slug = $slugger->generateSlug($insertedString);
+
+        $slug = $this->slugger->generateSlug($insertedString);
+
         $this->assertEquals($expectedResult, $slug);
     }
 
@@ -33,9 +45,9 @@ class SluggerTest extends TestCase
     {
         $insertedString = 'test & slug';
         $expectedResult = 'test-slug';
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $slugger = new Slugger($entityManager);
-        $slug = $slugger->generateSlug($insertedString);
+
+        $slug = $this->slugger->generateSlug($insertedString);
+
         $this->assertEquals($expectedResult, $slug);
     }
 
@@ -43,43 +55,45 @@ class SluggerTest extends TestCase
     {
         $insertedString = '& test #';
         $expectedResult = 'test';
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $slugger = new Slugger($entityManager);
-        $slug = $slugger->generateSlug($insertedString);
+
+        $slug = $this->slugger->generateSlug($insertedString);
+
         $this->assertEquals($expectedResult, $slug);
     }
 
     public function testSlugExists()
     {
         $existingSlug = 'existing-slug';
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $repository = $this->createMock(SiteRepository::class);
-        $entityManager->method('getRepository')
-            ->willReturn($repository);
+
+        $this->entityManager->method('getRepository')
+            ->willReturn($this->repository);
+
         $site = new Site();
         $site->setSlug($existingSlug);
-        $repository->expects($this->once())
+
+        $this->repository->expects($this->once())
             ->method('findOneBy')
             ->with($this->equalTo(['slug' => $existingSlug]))
             ->willReturn($site);
-        $slugger = new Slugger($entityManager);
-        $slugExists = $slugger->checkIfSlugExists($existingSlug, 'Site');
+
+        $slugExists = $this->slugger->checkIfSlugExists($existingSlug, 'Site');
+
         $this->assertEquals(true, $slugExists);
     }
 
     public function testSlugDoesNotExist()
     {
         $nonExistentSlug = 'slug';
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $repository = $this->createMock(SiteRepository::class);
-        $entityManager->method('getRepository')
-            ->willReturn($repository);
-        $repository->expects($this->once())
+
+        $this->entityManager->method('getRepository')
+            ->willReturn($this->repository);
+        $this->repository->expects($this->once())
             ->method('findOneBy')
             ->with($this->equalTo(['slug' => $nonExistentSlug]))
             ->willReturn(null);
-        $slugger = new Slugger($entityManager);
-        $slugExists = $slugger->checkIfSlugExists($nonExistentSlug, 'Site');
+
+        $slugExists = $this->slugger->checkIfSlugExists($nonExistentSlug, 'Site');
+
         $this->assertEquals(false, $slugExists);
     }
 
@@ -87,19 +101,21 @@ class SluggerTest extends TestCase
     {
         $existingSlug = 'slug';
         $currentSiteId = 1;
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $repository = $this->createMock(SiteRepository::class);
-        $entityManager->method('getRepository')
-            ->willReturn($repository);
+
+        $this->entityManager->method('getRepository')
+            ->willReturn($this->repository);
+
         $site = $this->createMock(Site::class);
         $site->method('getId')
             ->willReturn($currentSiteId);
-        $repository->expects($this->once())
+
+        $this->repository->expects($this->once())
             ->method('findOneBy')
             ->with($this->equalTo(['slug' => $existingSlug]))
             ->willReturn($site);
-        $slugger = new Slugger($entityManager);
-        $slugExists = $slugger->checkIfSlugExists($existingSlug, 'Site', $site->getId());
+
+        $slugExists = $this->slugger->checkIfSlugExists($existingSlug, 'Site', $site->getId());
+
         $this->assertEquals(false, $slugExists);
     }
 
@@ -108,19 +124,21 @@ class SluggerTest extends TestCase
         $existingSlug = 'slug';
         $currentSiteId = 1;
         $differentSiteId = 2;
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $repository = $this->createMock(SiteRepository::class);
-        $entityManager->method('getRepository')
-            ->willReturn($repository);
+
+        $this->entityManager->method('getRepository')
+            ->willReturn($this->repository);
+
         $site = $this->createMock(Site::class);
         $site->method('getId')
             ->willReturn($currentSiteId);
-        $repository->expects($this->once())
+
+        $this->repository->expects($this->once())
             ->method('findOneBy')
             ->with($this->equalTo(['slug' => $existingSlug]))
             ->willReturn($site);
-        $slugger = new Slugger($entityManager);
-        $slugExists = $slugger->checkIfSlugExists($existingSlug, 'Site', $differentSiteId);
+
+        $slugExists = $this->slugger->checkIfSlugExists($existingSlug, 'Site', $differentSiteId);
+
         $this->assertEquals(true, $slugExists);
     }
 
