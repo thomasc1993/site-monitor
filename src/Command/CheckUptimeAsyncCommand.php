@@ -31,7 +31,16 @@ class CheckUptimeAsyncCommand extends Command
         $promises = [];
         foreach ($sites as $site) {
             $crawlStart = microtime(true);
-            $promises[] = $guzzle->requestAsync('GET', $site->getUrl(), ['timeout' => 10])->then(
+            $promises[] = $guzzle->requestAsync(
+                'GET',
+                $site->getUrl(),
+                [
+                    'headers' => [
+                        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
+                    ],
+                    'timeout' => 10
+                ]
+            )->then(
                 function (ResponseInterface $response) use ($site, $crawlStart) {
                     $this->fulfilled($response, $site, $crawlStart);
                 },
