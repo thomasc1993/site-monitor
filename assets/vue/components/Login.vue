@@ -1,18 +1,9 @@
 <template>
   <div class="container loginPage">
     <h1 class="loginPage__title">Login</h1>
-    <transition name="fade">
-      <div class="loadingCloak" v-if="isLoading || loginSuccess ">
-        <div class="loadingCloak__content">
-          <Loader v-if="!loginSuccess" />
-          <transition name="popIn">
-            <div class="success" v-if="this.loginSuccess">
-              <i class="ion-md-checkmark-circle-outline"></i>
-            </div>
-          </transition>
-        </div>
-      </div>
-    </transition>
+    <FormResponse :is-loading="isLoading"
+                  :success="loginSuccess"
+    />
     <form method="post" class="loginForm" v-on:submit="submitForm" :action="this.formUrl">
       <input name="email" v-model="email" type="email" placeholder="Email" required>
       <input name="password" v-model="password" type="password" placeholder="Password" required>
@@ -30,7 +21,7 @@
 
 <script>
   import axios from 'axios';
-  import Loader from './Loader';
+  import FormResponse from './FormResponse';
 
   export default {
     name: 'login',
@@ -41,7 +32,7 @@
     ],
 
     components: {
-      Loader
+      FormResponse
     },
 
     data() {
@@ -49,7 +40,7 @@
         email: null,
         password: null,
         error: null,
-        loginSuccess: false,
+        loginSuccess: null,
         isLoading: false
       }
     },
@@ -72,17 +63,14 @@
         }).then(res => {
           if (res.data.login_success) {
             this.isLoading = false;
-            this.loginSuccess = true;
+            this.loginSuccess = 'Successfully logged in.';
             window.location.href = this.successUrl;
           }
         }).catch(error => {
+          const jsonResponse = JSON.parse(error.request.response);
           this.isLoading = false;
           this.password = null;
-          if (error.response.data.error) {
-            this.errorMessage = error.response.data.error;
-          } else {
-            this.errorMessage = error;
-          }
+          this.error = jsonResponse.error;
         });
       }
     }
