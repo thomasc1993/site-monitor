@@ -13,7 +13,10 @@
         </div>
         <div class="inputRow">
           <label for="cms">CMS</label>
-          <input id="cms" name="cms" type="text" v-model="cms">
+          <CmsInput id="cms"
+                    :cms="cms"
+                    v-on:update="this.updateCms"
+          />
         </div>
         <div class="inputRow">
           <label for="admin-url">Admin URL</label>
@@ -33,6 +36,7 @@
 <script>
   import axios from 'axios';
   import FormResponse from './FormResponse';
+  import CmsInput from './Site/InputFields/CmsInput';
 
   export default {
     name: 'editSite',
@@ -46,6 +50,7 @@
     ],
 
     components: {
+      CmsInput,
       FormResponse
     },
 
@@ -62,6 +67,9 @@
     },
 
     methods: {
+      updateCms(cms) {
+        this.cms = cms;
+      },
       submitForm(e) {
         e.preventDefault();
         this.errorMessage = null;

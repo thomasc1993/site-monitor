@@ -27,12 +27,10 @@
         </div>
         <div class="inputRow">
           <label for="cms">CMS</label>
-          <input id="cms"
-                 name="cms"
-                 type="text"
-                 v-model="cms"
-                 required
-          >
+          <CmsInput id="cms"
+                    :cms="cms"
+                    v-on:update="this.updateCms"
+          />
         </div>
         <div class="inputRow">
           <label for="admin-url">Admin URL</label>
@@ -59,6 +57,7 @@
 <script>
   import axios from 'axios';
   import FormResponse from './FormResponse';
+  import CmsInput from './Site/InputFields/CmsInput';
 
   export default {
     name: 'AddSite',
@@ -70,7 +69,8 @@
     ],
 
     components: {
-      FormResponse
+      FormResponse,
+      CmsInput
     },
 
     data() {
@@ -86,6 +86,9 @@
     },
 
     methods: {
+      updateCms(cms) {
+        this.cms = cms;
+      },
       submitForm(e) {
         e.preventDefault();
         this.error = null;
@@ -100,7 +103,7 @@
         }).then(res => {
           if (res.data.response) {
             this.isLoading = false;
-            this.success = 'Site successfully added.';
+            this.success = 'Site successfully created.';
             window.location.href = this.redirectUrl;
           }
         }).catch(error => {
