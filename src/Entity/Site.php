@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SiteRepository")
@@ -142,5 +145,14 @@ class Site
         $this->slug = $slug;
 
         return $this;
+    }
+
+    public function serializer($format)
+    {
+        $encoder = new JsonEncoder();
+        $normalizer = new ObjectNormalizer();
+        $serializer = new Serializer([$normalizer], [$encoder]);
+
+        return $serializer->serialize($this, $format);
     }
 }

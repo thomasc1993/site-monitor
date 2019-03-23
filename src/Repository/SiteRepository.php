@@ -19,6 +19,14 @@ class SiteRepository extends ServiceEntityRepository
         parent::__construct($registry, Site::class);
     }
 
+    public function findAllSortedByStatusAndName()
+    {
+        return $this->findBy([], [
+            'status' => 'asc',
+            'name' => 'asc'
+        ]);
+    }
+
     // /**
     //  * @return Site[] Returns an array of Site objects
     //  */

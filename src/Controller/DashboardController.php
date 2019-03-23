@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Repository\SiteRepository;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -16,87 +17,21 @@ use Symfony\Component\Serializer\Serializer;
 
 final class DashboardController extends AbstractController
 {
-    public function display(): Response
+    private $siteRepository;
+
+    public function __construct(SiteRepository $siteRepository)
     {
+        $this->siteRepository = $siteRepository;
+    }
+
+    public function renderDashboard(): Response
+    {
+        $sites = $this->siteRepository->findAllSortedByStatusAndName();
         $serializer = $this->getSerializer();
-        $siteRepository = $this->getDoctrine()->getRepository(Site::class);
-        $sites = $siteRepository->findBy([], [
-            'status' => 'asc',
-            'name' => 'asc'
-        ]);
         $jsonSites = $serializer->serialize($sites, 'json');
 
         return $this->render('dashboard/index.html.twig', [
             'sites' => $jsonSites
-        ]);
-    }
-
-    public function edit($slug): Response
-    {
-        $siteRepository = $this->getDoctrine()->getRepository(Site::class);
-        $site = $siteRepository->findOneBy(['slug' => $slug]);
-        $jsonSite = $this->getSerializer()->serialize($site, 'json');
-
-        return $this->render('dashboard/edit.html.twig', [
-            'siteId' => $site->getId(),
-            'site' => $jsonSite
-        ]);
-    }
-
-    public function new(): Response
-    {
-        return $this->render('dashboard/new.html.twig', []);
-    }
-
-    public function saveNew(Request $request): JsonResponse
-    {
-        $data = json_decode($request->getContent());
-
-        if (!$this->isCsrfTokenValid('save-site', $data->token)) {
-            return $this->json(['error' => 'Token not valid.']);
-        }
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $site = new Site();
-        $site->setName($data->name);
-        $site->setStatus('up');
-        $site->setUrl($data->url);
-        $site->setCms($data->cms);
-        $site->setAdminUrl($data->admin_url);
-        $entityManager->persist($site);
-        $entityManager->flush();
-
-        return $this->json([
-            'response' => 'Site saved.'
-        ]);
-    }
-
-    public function save(Request $request): JsonResponse
-    {
-        $data = json_decode($request->getContent());
-
-        if (!$this->isCsrfTokenValid('save-site', $data->token)) {
-            return $this->json(['error' => 'Token not valid.']);
-        }
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $siteRepository = $this->getDoctrine()->getRepository(Site::class);
-
-        $site = $siteRepository->find($data->id);
-        if (!$site) {
-            return $this->json([
-                'error' => 'Site with ID ' . $data->id . ' not found.'
-            ]);
-        }
-
-        $site->setName($data->name);
-        $site->setUrl($data->url);
-        $site->setCms($data->cms);
-        $site->setAdminUrl($data->admin_url);
-        $entityManager->flush();
-
-        return $this->json([
-            'response' => 'Site saved.'
         ]);
     }
 
@@ -110,12 +45,8 @@ final class DashboardController extends AbstractController
         $output = new NullOutput();
         $application->run($input, $output);
 
+        $sites = $this->siteRepository->findAllSortedByStatusAndName();
         $serializer = $this->getSerializer();
-        $siteRepository = $this->getDoctrine()->getRepository(Site::class);
-        $sites = $siteRepository->findBy([], [
-            'status' => 'asc',
-            'name' => 'asc'
-        ]);
         $jsonSites = $serializer->serialize($sites, 'json');
 
         return new JsonResponse($jsonSites, 200, [], true);

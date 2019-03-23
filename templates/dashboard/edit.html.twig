@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <edit-site :site="{{ site }}"
-               form-url="{{ url('save_site', {'id': siteId}) }}"
+    <edit-site :site="{{ site.serializer('json') }}"
+               form-url="{{ url('update_site_json') }}"
                csrf-token="{{ csrf_token('save-site') }}"
-               id="{{ siteId }}"
+               id="{{ site.id }}"
                redirect-url="{{ url('index') }}"
     ></edit-site>
 {% endblock %}

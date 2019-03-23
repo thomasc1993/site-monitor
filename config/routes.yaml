@@ -1,19 +1,19 @@
 index:
   path: /
-  controller: App\Controller\DashboardController::display
+  controller: App\Controller\DashboardController::renderDashboard
 add_site:
-  path: /site/new
-  controller: App\Controller\DashboardController::new
-save_new_site:
-  path: /site/new/save
-  controller: App\Controller\DashboardController::saveNew
+  path: /site/add
+  controller: App\Controller\SiteController::add
+save_site_json:
+  path: /site/add/save
+  controller: App\Controller\SiteController::saveJson
   methods: [POST]
 edit_site:
-  path: /site/{slug}
-  controller: App\Controller\DashboardController::edit
-save_site:
-  path: /site/{id}/save
-  controller: App\Controller\DashboardController::save
+  path: /site/edit/{slug}
+  controller: App\Controller\SiteController::edit
+update_site_json:
+  path: /site/save
+  controller: App\Controller\SiteController::updateJson
   methods: [POST]
 crawl_sites:
   path: /sites/crawl
