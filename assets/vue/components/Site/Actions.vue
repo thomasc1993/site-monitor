@@ -1,7 +1,7 @@
 <template>
   <div>
     <span class="siteList__single__title">Actions</span>
-    <a :href="`site/${site.slug}`">
+    <a :href="editUrl">
       <i class="ion-md-create"></i>
       <span>Edit</span>
     </a>
@@ -20,7 +20,12 @@
     computed: {
       componentClass() {
         return this.cssClass ? this.cssClass + '__actions' : 'actions';
+      },
+
+      editUrl() {
+        const url = this.$store.getters['route/path']('edit_site');
+        return url.replace('{slug}', this.site.slug);
       }
-    },
+    }
   }
 </script>

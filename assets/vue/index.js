@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import store from './store';
 
 // Components
 import AddSite from './components/AddSite';
@@ -20,5 +21,7 @@ new Vue({
     Dashboard,
     EditSite,
     Login
-  }
+  },
+
+  store
 });
