@@ -8,7 +8,7 @@
       >
         <i class="ion-md-refresh"></i>
       </div>
-      <a href="site/new" class="addSiteButton">
+      <a :href="addUrl" class="addSiteButton">
         <i class="ion-md-add"></i>
       </a>
     </div>
@@ -52,6 +52,12 @@
             this.sites = res.data;
             this.loading = false;
           });
+      }
+    },
+
+    computed: {
+      addUrl() {
+        return this.$store.getters['route/path']('add_site');
       }
     }
   }
