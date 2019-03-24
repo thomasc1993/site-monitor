@@ -97,10 +97,6 @@ class Site
 
     public function getCms(): ?string
     {
-        if ($this->cms === 'none') {
-            return null;
-        }
-
         return $this->cms;
     }
 

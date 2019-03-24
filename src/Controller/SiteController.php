@@ -35,7 +35,7 @@ class SiteController extends AbstractController
     {
         $data = json_decode($request->getContent());
 
-        if (!$this->isCsrfTokenValid('save-site', $data->token)) {
+        if (!$this->isCsrfTokenValid('save-site', $data->token) || !isset($data->token)) {
             return $this->json(['error' => 'Token not valid.'], 400);
         }
 
@@ -46,10 +46,7 @@ class SiteController extends AbstractController
             ], 404);
         }
 
-        $site->setName($data->name);
-        $site->setUrl($data->url);
-        $site->setCms($data->cms);
-        $site->setAdminUrl($data->admin_url);
+        $this->setSiteData($site, $data);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->json([
@@ -61,17 +58,11 @@ class SiteController extends AbstractController
     {
         $data = json_decode($request->getContent());
 
-        if (!$this->isCsrfTokenValid('save-site', $data->token)) {
+        if (!$this->isCsrfTokenValid('save-site', $data->token) || !isset($data->token)) {
             return $this->json(['error' => 'Token not valid.'], 400);
         }
 
-        $site = new Site();
-        $site->setName($data->name);
-        $site->setStatus('up');
-        $site->setUrl($data->url);
-        $site->setCms($data->cms);
-        $site->setAdminUrl($data->admin_url);
-
+        $site = $this->setSiteData(new Site(), $data);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($site);
         $entityManager->flush();
@@ -79,5 +70,22 @@ class SiteController extends AbstractController
         return $this->json([
             'response' => 'Site saved.'
         ]);
+    }
+
+    /**
+     * Sets Site properties from a set of data.
+     * @param Site $site
+     * @param Object $data
+     * @return Site the site entity with updated property values
+     */
+    private function setSiteData(Site $site, Object $data): Site
+    {
+        $site->setName($data->name);
+        $site->setStatus('up');
+        $site->setUrl($data->url);
+        $site->setCms($data->cms ? $data->cms : 'none');
+        $site->setAdminUrl($data->admin_url);
+
+        return $site;
     }
 }
