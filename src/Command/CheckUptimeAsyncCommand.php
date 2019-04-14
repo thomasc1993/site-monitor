@@ -2,6 +2,7 @@
 namespace App\Command;
 
 use App\Entity\Site;
+use App\Event\SitesCrawledEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
@@ -9,15 +10,18 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use GuzzleHttp\Client;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class CheckUptimeAsyncCommand extends Command
 {
     protected static $defaultName = 'app:check-uptime-async';
     private $em;
+    private $eventDispatcher;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, EventDispatcherInterface $eventDispatcher)
     {
         $this->em = $em;
+        $this->eventDispatcher = $eventDispatcher;
         parent::__construct();
     }
 
@@ -52,6 +56,10 @@ class CheckUptimeAsyncCommand extends Command
         foreach ($promises as $promise) {
             $promise->wait();
         }
+
+        $crawledSites = $siteRepository->findAll();
+        $event = new SitesCrawledEvent($crawledSites);
+        $this->eventDispatcher->dispatch(SitesCrawledEvent::NAME, $event);
     }
 
     protected function fulfilled(ResponseInterface $response, Site $site, $crawlStart)
